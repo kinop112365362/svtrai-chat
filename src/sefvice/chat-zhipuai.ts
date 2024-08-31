@@ -5,7 +5,7 @@ import { events } from "fetch-event-stream"
 
 export default async function chatMoV2(messages, onChunk, onCancel, isFirst = true, temperature = 0, overFlag = "YES") {
   // const wsPort = (await (window as any).electronAPI?.env?.getWsPort()) || 3000
-  const apiKey = localStorage.getItem("mobenai.api-key")
+  const apiKey = "1e8ff45efdc07e341345e9147c4829c2.6EqRkM5UPaPcRaG9"
   const apiEndPoint = `https://open.bigmodel.cn/api/paas/v4/chat/completions`
   const payload = {
     model: "glm-4-flash",

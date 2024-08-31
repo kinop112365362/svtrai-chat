@@ -42,7 +42,37 @@ function App() {
           requests: {
             send: async function (msg) {
               if (msg.type === "text" || msg.code === "text") {
+                let messageId = null
+                let fullContent = ""
                 try {
+                  const response = await chatZhipuai(
+                    [{ role: "user", content: msg.data.text }],
+                    (chunk) => {
+                      console.log("Response from chatZhipuai:", chunk)
+                      if (messageId) {
+                        fullContent += chunk
+                        bot.updateMessage(messageId, {
+                          code: "text",
+                          data: { text: fullContent },
+                          position: "left",
+                        })
+                      } else {
+                        messageId = Math.random()
+                        fullContent += chunk
+                        bot.appendMessage({
+                          id: messageId,
+                          code: "text",
+                          data: { text: fullContent },
+                          position: "left",
+                        })
+                      }
+                    },
+                    () => {},
+                    true,
+                    0,
+                    "YES"
+                  )
+                  console.log("Response from chatZhipuai:", response)
                 } catch (error) {
                   console.error("Error sending message:", error)
                 }
@@ -50,13 +80,13 @@ function App() {
             },
           },
           handlers: {
-            parseResponse: function (res, requestType) {
-              if (requestType === "send" && res.MessageId) {
-                // 解析 ISV 消息数据
-                return isvParser({ data: res })
-              }
-              return res
-            },
+            // parseResponse: function (res, requestType) {
+            //   if (requestType === "send" && res.MessageId) {
+            //     // 解析 ISV 消息数据
+            //     return isvParser({ data: res })
+            //   }
+            //   return res
+            // },
           },
         })
 
